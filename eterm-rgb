@@ -1,0 +1,37 @@
+#!/bin/zsh
+PATH="/opt/e17/bin:/opt/e16/bin:/opt/bin:${PATH}"	export PATH
+pick()	{
+	local	retval
+	if [ -x /opt/bin/urandom ]; then
+		retval=$(/opt/bin/urandom -n 256)
+	else
+		retval=$(( (RANDOM) % 256))
+	fi
+	# Never return a zero!
+	echo $((retval + 1))
+}
+red=$(pick)
+green=$(pick)
+blue=$(pick)
+# brightness=$(( 230 ))
+brightness=$(pick)
+contrast=$(pick)
+gamma=$(pick)
+# logger -t eterm-rgb "red=${red}, green=${green}, blue=${blue}, brightness=${brightness}, contrast=${contrast}, gamma=${gamma}" >&2
+SCROLLBACK=1024
+exec Eterm								\
+	-0								\
+	-O								\
+	-f '#DEE3E3'							\
+	-t smoked_glass							\
+	-b gray20							\
+	-c '#EEF3F3'							\
+	-B next								\
+	--cursor-text-color '#EEF3F3'					\
+	--pointer-color '#EEF3F3'					\
+	--cmod ${brightness} ${contrast} ${gamma}			\
+	--cmod-red ${red}						\
+	--cmod-green ${green}						\
+	--cmod-blue ${blue}						\
+        -L ${SCROLLBACK}						\
+	$@
